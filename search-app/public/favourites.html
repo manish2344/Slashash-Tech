@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favourites</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>Saved Favourites</h2>
+
+        <table class="table table-striped mt-5" id="favouritesTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Pincode</th>
+                    <th>Branch Type</th>
+                    <th>Delivery Status</th>
+                    <th>District</th>
+                    <th>Region</th>
+                    <th>State</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const tableBody = document.querySelector('#favouritesTable tbody');
+
+            fetch('http://localhost:3000/favourites')
+                .then(response => response.json())
+                .then(data => {
+                    const favouritesList = data && data.favourites ? data.favourites : [];
+
+                    tableBody.innerHTML = '';
+
+                    if (favouritesList.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="7">No favourites saved.</td></tr>';
+                    } else {
+                        favouritesList.forEach(favourite => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${favourite.name || 'N/A'}</td>
+                                <td>${favourite.pincode || 'N/A'}</td>
+                                <td>${favourite.branchType || 'N/A'}</td>
+                                <td>${favourite.deliveryStatus || 'N/A'}</td>
+                                <td>${favourite.district || 'N/A'}</td>
+                                <td>${favourite.region || 'N/A'}</td>
+                                <td>${favourite.state || 'N/A'}</td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    }
+                })
+                .catch(error => {
+                    tableBody.innerHTML = '<tr><td colspan="7">Error fetching favourites. Please try again later.</td></tr>';
+                });
+
+        });
+    </script>
+</body>
+
+</html>
